@@ -1,6 +1,10 @@
 package com.taskagile.domain.model.user;
 
-public interface UserRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface UserRepository extends JpaRepository<User, Long> {
 
     /**
      * Find user by a username
@@ -18,11 +22,4 @@ public interface UserRepository {
      */
     User findByEmailAddress(String emailAddress);
 
-    /**
-     * Save a new user or an existing user
-     *
-     * @param user the user instance to be saved
-     * @return the newly save user
-     */
-    void save(User user);
 }

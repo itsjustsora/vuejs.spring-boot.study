@@ -1,17 +1,21 @@
 server.port: 8082
 
 spring:
-  profiles:
   datasource:
-    platform:
     driver-class-name: org.h2.Driver
-    url: jdbc:h2:~/test
+    url: jdbc:h2:mem:taskagile;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
     username: sa
     password:
-    initialization-mode:
-    schema: classpath:h2/schema.sql
-    data: classpath:h2/data.sql
   h2:
     console:
     enabled: true
     path: /h2-console
+  config:
+    activate:
+      on-profile:
+#  sql:
+#    init:
+#      platform:
+#      mode:
+#      schema-locations: classpath:h2/schema.sql
+#      data-locations: classpath:h2/data.sql
