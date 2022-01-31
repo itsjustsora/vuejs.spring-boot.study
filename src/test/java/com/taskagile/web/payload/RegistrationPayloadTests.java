@@ -1,8 +1,6 @@
 package com.taskagile.web.payload;
 
-import com.taskagile.web.payload.RegistrationPayload;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -11,6 +9,8 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import java.util.Set;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class RegistrationPayloadTests {
 
@@ -25,9 +25,11 @@ public class RegistrationPayloadTests {
     @Test
     public void validate_blankPayload_shouldFail() {
         RegistrationPayload payload = new RegistrationPayload();
+
         Set<ConstraintViolation<RegistrationPayload>> violations = validator.validate(payload);
-        Assertions.assertEquals(3, violations.size());
+        assertEquals(3, violations.size());
     }
+
 
     @Test
     public void validate_payloadWithInvalidEmail_shouldFail() {
@@ -37,11 +39,13 @@ public class RegistrationPayloadTests {
         payload.setPassword("MyPassword");
 
         Set<ConstraintViolation<RegistrationPayload>> violations = validator.validate(payload);
-        Assertions.assertEquals(1, violations.size());
+        assertEquals(1, violations.size());
     }
 
     @Test
     public void validate_payloadWithEmailAddressLongerThan100_shouldFail() {
+        // The maximium allowed localPart is 64 characters
+        // http://www.rfc-editor.org/errata_search.php?rfc=3696&eid=1690
         int maxLocalParthLength = 64;
         String localPart = RandomStringUtils.random(maxLocalParthLength, true, true);
         int usedLength = maxLocalParthLength + "@".length() + ".com".length();
@@ -53,7 +57,7 @@ public class RegistrationPayloadTests {
         payload.setPassword("MyPassword");
 
         Set<ConstraintViolation<RegistrationPayload>> violations = validator.validate(payload);
-        Assertions.assertEquals(1, violations.size());
+        assertEquals(1, violations.size());
     }
 
     @Test
@@ -65,7 +69,7 @@ public class RegistrationPayloadTests {
         payload.setEmailAddress("sunny@taskagile.com");
 
         Set<ConstraintViolation<RegistrationPayload>> violations = validator.validate(payload);
-        Assertions.assertEquals(1, violations.size());
+        assertEquals(1, violations.size());
     }
 
     @Test
@@ -77,7 +81,7 @@ public class RegistrationPayloadTests {
         payload.setEmailAddress("sunny@taskagile.com");
 
         Set<ConstraintViolation<RegistrationPayload>> violations = validator.validate(payload);
-        Assertions.assertEquals(1, violations.size());
+        assertEquals(1, violations.size());
     }
 
     @Test
@@ -89,7 +93,7 @@ public class RegistrationPayloadTests {
         payload.setEmailAddress("sunny@taskagile.com");
 
         Set<ConstraintViolation<RegistrationPayload>> violations = validator.validate(payload);
-        Assertions.assertEquals(1, violations.size());
+        assertEquals(1, violations.size());
     }
 
     @Test
@@ -101,6 +105,7 @@ public class RegistrationPayloadTests {
         payload.setEmailAddress("sunny@taskagile.com");
 
         Set<ConstraintViolation<RegistrationPayload>> violations = validator.validate(payload);
-        Assertions.assertEquals(1, violations.size());
+        assertEquals(1, violations.size());
     }
+
 }

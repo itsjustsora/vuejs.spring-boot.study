@@ -2,6 +2,7 @@ package com.taskagile.web.apis;
 
 import com.taskagile.config.SecurityConfiguration;
 import com.taskagile.domain.appilcation.UserService;
+import com.taskagile.domain.model.user.EmailAddressExistsException;
 import com.taskagile.domain.model.user.UsernameExistsException;
 import com.taskagile.utils.JsonUtils;
 import com.taskagile.web.payload.RegistrationPayload;
@@ -34,8 +35,7 @@ public class RegistrationApiControllerTests {
 
     @Test
     public void register_blankPayload_shouldFailAndReturn400() throws Exception {
-        mvc.perform(MockMvcRequestBuilders
-                .post("/api/registrations"))
+        mvc.perform(MockMvcRequestBuilders.post("/api/registrations"))
                 .andExpect(status().is(400));
     }
 
@@ -51,12 +51,30 @@ public class RegistrationApiControllerTests {
                 .register(payload.toCommand());
 
         mvc.perform(MockMvcRequestBuilders
-                .post("/api/registrations")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonUtils.toJson(payload)))
+                        .post("/api/registrations")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(JsonUtils.toJson(payload)))
                 .andExpect(status().is(400))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.message")
-                        .value("Username already exists"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Username already exists"));
+    }
+
+    @Test
+    public void register_existedEmailAddress_shouldFailAndReturn400() throws Exception {
+        RegistrationPayload payload = new RegistrationPayload();
+        payload.setUsername("test");
+        payload.setEmailAddress("exist@taskagile.com");
+        payload.setPassword("MyPassword!");
+
+        doThrow(EmailAddressExistsException.class)
+                .when(serviceMock)
+                .register(payload.toCommand());
+
+        mvc.perform(MockMvcRequestBuilders
+                        .post("/api/registrations")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(JsonUtils.toJson(payload)))
+                .andExpect(status().is(400))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Email address already exists"));
     }
 
     @Test
@@ -71,8 +89,8 @@ public class RegistrationApiControllerTests {
 
         mvc.perform(MockMvcRequestBuilders
                         .post("/api/registrations")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(JsonUtils.toJson(payload)))
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(JsonUtils.toJson(payload)))
                 .andExpect(status().is(201));
     }
 }

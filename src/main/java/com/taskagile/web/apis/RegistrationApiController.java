@@ -18,12 +18,10 @@ import javax.validation.Valid;
 public class RegistrationApiController {
 
     private UserService service;
-/*
 
-    public RegistrationApiController(UserService service) {
+   /* public RegistrationApiController(UserService service) {
         this.service = service;
-    }
-*/
+    }*/
 
     @PostMapping("/api/registrations")
     public ResponseEntity<ApiResult> register(@Valid @RequestBody RegistrationPayload payload) {
